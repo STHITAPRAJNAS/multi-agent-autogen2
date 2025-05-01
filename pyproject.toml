@@ -1,0 +1,28 @@
+[project]
+name = "autogen-app"
+version = "0.1.0"
+description = "An Autogen based application"
+authors = [
+    { name = "Your Name", email = "you@example.com" }
+]
+dependencies = [
+    "uvicorn>=0.26.0",
+    "fastapi>=0.109.0",
+    "pyyaml>=6.0.1",
+    "autogen>=0.2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "uv>=0.1.80"
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.uv]
+managed-pip = true

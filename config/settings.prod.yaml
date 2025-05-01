@@ -1,0 +1,21 @@
+app_config:
+  llm_config:
+    OAI_CONFIG_LIST: ""
+    DEFAULT_MODEL: "gpt-3.5-turbo-16k"
+  app:
+    CACHE_SEED_PATH: "./cache_seed"
+    MAX_HISTORY_LENGTH: 10
+    MAX_CONSECUTIVE_AUTO_REPLY: 0
+    DEFAULT_COST_PER_TOKEN: 0.000002
+    ENV: "prod"
+    MODEL_TYPE: "bedrock"
+    ANTHROPIC_API_KEY : ""
+    GEMINI_API_KEY : ""
+
+bedrock_config:
+  ANTHROPIC_MODEL_ID: "anthropic.claude-v2"
+  GEMINI_MODEL_ID: "google_gemini_pro"
+  BEDROCK_REGION: "us-east-1"
+
+database_config:
+  db_url: "postgresql://user:password@host:port/database"
