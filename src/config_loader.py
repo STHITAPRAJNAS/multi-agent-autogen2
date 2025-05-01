@@ -1,6 +1,7 @@
 import yaml  # Corrected import name
 import os
 import logging
+from dataclasses import dataclass
 from typing import Any, Dict, Optional
 
 
@@ -18,7 +19,13 @@ class ConfigLoader:
           self.config_path = os.path.join(self.config_dir, "settings.prod.yaml")
         elif env == "local":
           self.config_path = os.path.join(self.config_dir, "settings.local.yaml")
+        self.pg_db_url: Optional[str] = None
+        self.pg_collection_name: Optional[str] = None
+
         
+
+        self.bedrock_config = None
+        self.database_config = None
         self.config = self._load_config()
 
     def _load_config(self) -> Dict[str, Any]:
@@ -32,6 +39,13 @@ class ConfigLoader:
             with open(self.config_path, "r") as file:  # Added "r" for read mode
                 config = yaml.safe_load(file)
                 logger.info(f"Loaded config from {self.config_path}")
+
+                if "database_config" in config:
+                    self.database_config = config["database_config"]
+                    self.pg_db_url = self.database_config.get("pg_db_url")
+                    self.pg_collection_name = self.database_config.get("pg_collection_name")
+
+                self.bedrock_config = config.get("bedrock_config")
                 return config
         except FileNotFoundError:
             logger.error(f"Config file not found at {self.config_path}")
@@ -80,6 +94,16 @@ class ConfigLoader:
         if "bedrock_config" in self.config:
             return self.config["bedrock_config"]
         return None
+    def get_pg_config(self) -> Dict[str, str]:
+        """
+        Gets the pgvector configuration.
+
+        Returns:
+            Dict[str, str]: The pgvector configuration.
+        """
+        return {
+            "pg_db_url": self.pg_db_url,
+            "pg_collection_name": self.pg_collection_name}
     
     def get_database_config(self) -> Optional[Dict[str, Any]]:
         """

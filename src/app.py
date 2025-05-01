@@ -9,6 +9,8 @@ from autogen import config_list_from_json, config_list_bedrock, config_list_from
 from src.config_loader import ConfigLoader
 
 from src.main import run_task, create_agents
+from src.utils.vector_store import prepare_vector_store
+
 from src.utils.conversation_manager import ConversationManager
 
 # Configure logging
@@ -30,7 +32,7 @@ agents: Dict[str, Any] = {}
 
 # Load LLM configuration
 model_type = app_config.get("MODEL_TYPE")
-if model_type not in ["openai", "bedrock"]:
+if model_type not in ["openai", "bedrock", "anthropic","gemini"]:
     logger.error(f"Invalid model type: {model_type}")
     raise ValueError(f"Invalid model type: {model_type}")
 
@@ -68,7 +70,9 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     logger.info("Starting up...")
     global agents
     try:
-        agents = create_agents(config_list, bedrock_config)  # Initialize agents
+        #prepare the vector store if it's needed
+        prepare_vector_store()
+        agents = create_agents(config_list, bedrock_config, config_loader.get_pg_config())  # Initialize agents
         logger.info("Agents initialized successfully")
     except Exception as e:
         logger.error(f"Failed to initialize agents: {e}")
@@ -98,7 +102,7 @@ async def chat(request: ConversationRequest) -> Dict[str, Any]:
     conversation_state = conversation_manager.get_or_create_conversation_state(request.conversation_id)
 
     try:
-        response = run_task(agents, request.query, conversation_state)        
+        response = run_task(agents, request.query, conversation_state, config_loader.get_pg_config().get("pg_collection_name"))
         return {"response": response}
     except Exception as e:
         logger.error(f"Error processing chat request: {e}")

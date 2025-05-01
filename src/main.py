@@ -11,10 +11,9 @@ from src.agents.user_proxy import create_user_proxy_agent
 config_loader = ConfigLoader()
 
 def create_agents(config_list: List[Dict], bedrock_config: Dict[str, str]) -> Dict[str, Any]:
-    """Creates and configures the multi-agent system."""
-    cache_seed_path = config_loader.get_config("CACHE_SEED_PATH")
+    """Creates and configures the multi-agent system."""    
     model_type = config_loader.get_config("MODEL_TYPE")
-    
+
     if model_type == "bedrock":
         llm_config = {
             "model": bedrock_config.get("ANTHROPIC_MODEL_ID"),
@@ -31,23 +30,21 @@ def create_agents(config_list: List[Dict], bedrock_config: Dict[str, str]) -> Di
 
     try:
       
-        user_proxy_llm_config = llm_config
-        user_proxy = create_user_proxy_agent(user_proxy_llm_config, cache_seed_path)
+        user_proxy_llm_config = llm_config        
+        user_proxy = create_user_proxy_agent(user_proxy_llm_config)
 
         knowledge_retriever_llm_config = llm_config_bedrock if model_type == "bedrock" else llm_config
         knowledge_retriever = create_knowledge_retriever_agent(
-            knowledge_retriever_llm_config,
-            cache_seed_path
-        )
-
-        sql_generator_llm_config = llm_config
+            knowledge_retriever_llm_config
+        )        
+        sql_generator_llm_config = llm_config        
         sql_generator = create_sql_generator_agent(
-            sql_generator_llm_config, cache_seed_path
+            sql_generator_llm_config
         )
 
-        code_generator_llm_config = llm_config
+        code_generator_llm_config = llm_config        
         code_generator = create_code_generator_agent(            
-            code_generator_llm_config, cache_seed_path
+            code_generator_llm_config
         )
 
 
@@ -62,7 +59,7 @@ def create_agents(config_list: List[Dict], bedrock_config: Dict[str, str]) -> Di
         return {}
 
 
-def run_task(agents: Dict[str, Any], user_query: str, conversation_state: ConversationState) -> Dict[str, Any]:
+def run_task(agents: Dict[str, Any], user_query: str, conversation_state: ConversationState, pg_collection_name: str) -> Dict[str, Any]:
     """Runs the three tasks using the agents and returns the results."""
     if not agents:
         logging.error("Agents not initialized.")
@@ -79,7 +76,8 @@ def run_task(agents: Dict[str, Any], user_query: str, conversation_state: Conver
         user_proxy.initiate_chat(
             knowledge_retriever, message=knowledge_query
         )
-        knowledge_result = knowledge_retriever_helper(knowledge_retriever, user_query)
+
+        knowledge_result = knowledge_retriever_helper(knowledge_retriever, user_query, pg_collection_name)
         conversation_state.append_message(user_query, knowledge_result, "knowledge_retrieval")
 
         # SQL query generation

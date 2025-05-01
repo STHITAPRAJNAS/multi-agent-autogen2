@@ -1,20 +1,26 @@
+# Database Settings (Local Development)
 database_config:
-  db_url: "sqlite:///./local.db"
+  db_type: "sqlite"
+  db_url: "sqlite:///local.db"
+  pg_db_url: "postgresql://user:password@localhost:5432/mydatabase" # Update with your PgVector connection string
+  pg_collection_name: "default_collection" # A default collection name for PgVector
 
-app_config:
-  llm_config:
-    OAI_CONFIG_LIST: ""
-    DEFAULT_MODEL: "gpt-3.5-turbo-16k"
-  app:
-    CACHE_SEED_PATH: "./cache_seed"
-    MAX_HISTORY_LENGTH: 10
-    MAX_CONSECUTIVE_AUTO_REPLY: 0
-    DEFAULT_COST_PER_TOKEN: 0.000002
-    ENV: "local"
-    MODEL_TYPE: "anthropic"
-    ANTHROPIC_API_KEY: ""
-    GEMINI_API_KEY: ""
+# LLM Settings
+llm_config:
+  max_tokens: 2048
+  temperature: 0.7
+  OAI_CONFIG_LIST: ""
+  DEFAULT_MODEL: "gpt-3.5-turbo-16k"
 
+# Conversation Settings
+conversation_config:
+  history_length: 10 # Number of conversation turns to keep in history
+  cost_per_token: 0.000002 # Example cost per token
+
+# Other Settings
+logging_config:
+  level: "DEBUG"
+  log_file: "app.log"
 bedrock_config:
   ANTHROPIC_MODEL_ID: "anthropic.claude-v2"
   GEMINI_MODEL_ID: "google_gemini_pro"
