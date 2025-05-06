@@ -10,7 +10,7 @@ llm_config:
   max_tokens: 2048
   temperature: 0.7
   OAI_CONFIG_LIST: ""
-  DEFAULT_MODEL: "gpt-3.5-turbo-16k"
+  DEFAULT_MODEL: "gemini-pro"
 
 # Conversation Settings
 conversation_config:
@@ -27,10 +27,10 @@ bedrock_config:
 
 # Local development settings
 llm:
-  provider: bedrock  # or gemini
-  model: claude-3-sonnet-20240229
-  region: us-east-1  # for bedrock
-  api_key: ""  # for gemini
+  provider: gemini  # Using Gemini for local development
+  model: gemini-pro
+  api_key: "${GEMINI_API_KEY}"  # Will be loaded from environment variable
+  api_type: google  # Required for AutoGen to recognize the provider
 
 vector_stores:
   knowledge_base:

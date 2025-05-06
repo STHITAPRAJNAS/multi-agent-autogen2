@@ -60,3 +60,4 @@ Thumbs.db
 
 #cache_seed
 cache_seed/
+.env

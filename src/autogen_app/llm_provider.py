@@ -32,7 +32,10 @@ class BedrockProvider(LLMProvider):
         return {
             "config_list": [{
                 "model": self.model,
-                "client": self.bedrock
+                "base_url": f"https://bedrock-runtime.{self.region}.amazonaws.com",
+                "api_type": "bedrock",
+                "api_key": os.getenv('AWS_ACCESS_KEY_ID'),
+                "api_secret": os.getenv('AWS_SECRET_ACCESS_KEY')
             }]
         }
 
@@ -48,7 +51,9 @@ class GeminiProvider(LLMProvider):
         return {
             "config_list": [{
                 "model": "gemini-pro",
-                "client": self.model
+                "base_url": "https://generativelanguage.googleapis.com/v1beta",
+                "api_type": "google",
+                "api_key": self.api_key
             }]
         }
 

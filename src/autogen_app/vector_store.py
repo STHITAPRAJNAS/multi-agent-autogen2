@@ -7,8 +7,8 @@ from typing import List, Dict, Any
 import yaml
 from pathlib import Path
 import os
-from langchain.vectorstores import PGVector, FAISS
-from langchain.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import PGVector, FAISS
+from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain.schema import Document
 
 class VectorStore(ABC):
@@ -29,7 +29,7 @@ class MemoryVectorStore(VectorStore):
     
     def __init__(self, config: Dict[str, Any]):
         self.embeddings = HuggingFaceEmbeddings(
-            model_name=config['embedding_model']
+            model_name=config["embedding_model"]
         )
         self.vectorstore = None
     
@@ -48,12 +48,12 @@ class PGVectorStore(VectorStore):
     """PostgreSQL vector store using pgvector."""
     
     def __init__(self, config: Dict[str, Any]):
-        connection_string = f"postgresql+psycopg2://{config['user']}:{config['password']}@{config['host']}:{config['port']}/{config['database']}"
+        connection_string = f"postgresql+psycopg2://{config["user"]}:{config["password"]}@{config["host"]}:{config["port"]}/{config["database"]}"
         self.embeddings = HuggingFaceEmbeddings(
-            model_name=config['embedding_model']
+            model_name=config["embedding_model"]
         )
         self.vectorstore = PGVector(
-            collection_name=config['collection_name'],
+            collection_name=config["collection_name"],
             connection_string=connection_string,
             embedding_function=self.embeddings
         )
@@ -66,17 +66,17 @@ class PGVectorStore(VectorStore):
 
 def get_vector_store(config: Dict[str, Any]) -> VectorStore:
     """Factory function to create appropriate vector store."""
-    store_type = config['type']
-    if store_type == 'memory':
+    store_type = config["type"]
+    if store_type == "memory":
         return MemoryVectorStore(config)
-    elif store_type == 'pgvector':
+    elif store_type == "pgvector":
         return PGVectorStore(config)
     else:
         raise ValueError(f"Unsupported vector store type: {store_type}")
 
 def load_config() -> Dict[str, Any]:
     """Load configuration from YAML file."""
-    env = os.getenv('ENV', 'local')
-    config_path = Path(__file__).parent.parent.parent / 'config' / f'settings.{env}.yaml'
-    with open(config_path, 'r') as f:
-        return yaml.safe_load(f) 
+    env = os.getenv("ENV", "local")
+    config_path = Path(__file__).parent.parent.parent / "config" / f"settings.{env}.yaml"
+    with open(config_path, "r") as f:
+        return yaml.safe_load(f)
