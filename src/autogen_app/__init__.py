@@ -7,8 +7,7 @@ from .agents import (
     KnowledgeRetrieverAgent,
     SQLGeneratorAgent,
     GraphQLGeneratorAgent,
-    CodeGeneratorAgent,
-    OrchestratorAgent
+    CodeGeneratorAgent
 )
 
 __version__ = "0.1.0"
@@ -17,6 +16,5 @@ __all__ = [
     'KnowledgeRetrieverAgent',
     'SQLGeneratorAgent',
     'GraphQLGeneratorAgent',
-    'CodeGeneratorAgent',
-    'OrchestratorAgent'
+    'CodeGeneratorAgent'
 ] 
