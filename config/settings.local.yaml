@@ -24,3 +24,55 @@ logging_config:
 bedrock_config:
   ANTHROPIC_MODEL_ID: "anthropic.claude-v2"
   GEMINI_MODEL_ID: "google_gemini_pro"
+
+# Local development settings
+llm:
+  provider: bedrock  # or gemini
+  model: claude-3-sonnet-20240229
+  region: us-east-1  # for bedrock
+  api_key: ""  # for gemini
+
+vector_stores:
+  knowledge_base:
+    type: memory  # local testing
+    collection_name: knowledge_base
+    embedding_model: all-MiniLM-L6-v2
+    dimensions: 384
+
+  databricks_schema:
+    type: memory  # local testing
+    collection_name: databricks_schema
+    embedding_model: all-MiniLM-L6-v2
+    dimensions: 384
+
+  graphql_schema:
+    type: memory  # local testing
+    collection_name: graphql_schema
+    embedding_model: all-MiniLM-L6-v2
+    dimensions: 384
+
+agents:
+  knowledge_retriever:
+    system_prompt: "You are a knowledge retrieval expert. Use the provided context to answer questions accurately."
+    max_tokens: 4000
+    temperature: 0.1
+
+  sql_generator:
+    system_prompt: "You are a SQL expert. Generate accurate SQL queries based on the provided schema and requirements."
+    max_tokens: 4000
+    temperature: 0.1
+
+  graphql_generator:
+    system_prompt: "You are a GraphQL expert. Generate accurate GraphQL queries based on the provided schema and requirements."
+    max_tokens: 4000
+    temperature: 0.1
+
+  code_generator:
+    system_prompt: "You are an expert software architect and developer. Generate high-quality, production-ready code."
+    max_tokens: 4000
+    temperature: 0.1
+
+  orchestrator:
+    system_prompt: "You are an AI orchestrator. Analyze user questions and delegate tasks to appropriate agents."
+    max_tokens: 4000
+    temperature: 0.1
